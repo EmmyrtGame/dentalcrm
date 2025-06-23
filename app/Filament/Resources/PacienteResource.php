@@ -37,9 +37,11 @@ class PacienteResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Section::make('Información Personal')
+                    ->icon('heroicon-o-user')
                     ->schema([
                         Forms\Components\TextInput::make('numero_expediente')
                             ->label('Número de Expediente')
+                            ->prefixIcon('heroicon-o-hashtag')
                             ->unique(ignoreRecord: true)
                             ->disabled()
                             ->dehydrated(false),
@@ -48,16 +50,19 @@ class PacienteResource extends Resource
                             ->schema([
                                 Forms\Components\TextInput::make('nombre')
                                     ->label('Nombre(s)')
+                                    ->prefixIcon('heroicon-o-user')
                                     ->required()
                                     ->maxLength(255),
                                 
                                 Forms\Components\TextInput::make('apellido_paterno')
                                     ->label('Apellido Paterno')
+                                    ->prefixIcon('heroicon-o-user-group')
                                     ->required()
                                     ->maxLength(255),
                                 
                                 Forms\Components\TextInput::make('apellido_materno')
                                     ->label('Apellido Materno')
+                                    ->prefixIcon('heroicon-o-user-group')
                                     ->maxLength(255),
                             ]),
                         
@@ -65,6 +70,9 @@ class PacienteResource extends Resource
                             ->schema([
                                 Forms\Components\DatePicker::make('fecha_nacimiento')
                                     ->label('Fecha de Nacimiento')
+                                    ->hint('Fecha de nacimiento')
+                                    ->hintIcon('heroicon-o-calendar-days')
+                                    ->hintColor('primary')
                                     ->required()
                                     ->native(false)
                                     ->displayFormat('d/m/Y')
@@ -72,6 +80,9 @@ class PacienteResource extends Resource
                                 
                                 Forms\Components\Select::make('sexo')
                                     ->label('Sexo')
+                                    ->hint('Género del paciente')
+                                    ->hintIcon('heroicon-o-identification')
+                                    ->hintColor('primary')
                                     ->required()
                                     ->options([
                                         'masculino' => 'Masculino',
@@ -81,6 +92,9 @@ class PacienteResource extends Resource
                                 
                                 Forms\Components\FileUpload::make('fotografia')
                                     ->label('Fotografía')
+                                    ->hint('Foto del paciente')
+                                    ->hintIcon('heroicon-o-camera')
+                                    ->hintColor('primary')
                                     ->image()
                                     ->directory('pacientes/fotos')
                                     ->visibility('private'),
@@ -88,28 +102,38 @@ class PacienteResource extends Resource
                     ]),
 
                 Forms\Components\Section::make('Información de Contacto')
+                    ->icon('heroicon-o-phone')
                     ->schema([
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\TextInput::make('telefono')
                                     ->label('Teléfono Principal')
+                                    ->prefixIcon('heroicon-o-phone')
+                                    ->prefixIconColor('success')
                                     ->required()
                                     ->tel()
                                     ->maxLength(20),
                                 
                                 Forms\Components\TextInput::make('telefono_secundario')
                                     ->label('Teléfono Secundario')
+                                    ->prefixIcon('heroicon-o-device-phone-mobile')
+                                    ->prefixIconColor('gray')
                                     ->tel()
                                     ->maxLength(20),
                             ]),
                         
                         Forms\Components\TextInput::make('email')
                             ->label('Correo Electrónico')
+                            ->prefixIcon('heroicon-o-envelope')
+                            ->prefixIconColor('primary')
                             ->email()
                             ->maxLength(255),
                         
                         Forms\Components\Textarea::make('direccion')
                             ->label('Dirección')
+                            ->hint('Dirección completa del paciente')
+                            ->hintIcon('heroicon-o-map-pin')
+                            ->hintColor('primary')
                             ->required()
                             ->rows(2),
                         
@@ -117,82 +141,127 @@ class PacienteResource extends Resource
                             ->schema([
                                 Forms\Components\TextInput::make('ciudad')
                                     ->label('Ciudad')
+                                    ->prefixIcon('heroicon-o-building-office-2')
                                     ->required()
                                     ->maxLength(100),
                                 
                                 Forms\Components\TextInput::make('estado')
                                     ->label('Estado')
+                                    ->prefixIcon('heroicon-o-map')
                                     ->required()
                                     ->maxLength(100),
                                 
                                 Forms\Components\TextInput::make('codigo_postal')
                                     ->label('Código Postal')
+                                    ->prefixIcon('heroicon-o-map-pin')
+                                    ->prefixIconColor('warning')
                                     ->required()
                                     ->maxLength(10),
                             ]),
                     ]),
 
                 Forms\Components\Section::make('Contacto de Emergencia')
+                    ->icon('heroicon-o-exclamation-triangle')
+                    ->iconColor('danger')
                     ->schema([
                         Forms\Components\Grid::make(3)
                             ->schema([
                                 Forms\Components\TextInput::make('contacto_emergencia_nombre')
                                     ->label('Nombre del Contacto')
+                                    ->prefixIcon('heroicon-o-user-plus')
+                                    ->prefixIconColor('danger')
                                     ->maxLength(255),
                                 
                                 Forms\Components\TextInput::make('contacto_emergencia_telefono')
                                     ->label('Teléfono de Emergencia')
+                                    ->prefixIcon('heroicon-o-phone-arrow-up-right')
+                                    ->prefixIconColor('danger')
                                     ->tel()
                                     ->maxLength(20),
                                 
                                 Forms\Components\TextInput::make('contacto_emergencia_relacion')
                                     ->label('Relación')
+                                    ->prefixIcon('heroicon-o-heart')
+                                    ->prefixIconColor('danger')
                                     ->maxLength(100),
                             ]),
                     ]),
 
                 Forms\Components\Section::make('Información Médica')
+                    ->icon('heroicon-o-heart')
+                    ->iconColor('danger')
                     ->schema([
                         Forms\Components\Textarea::make('alergias')
                             ->label('Alergias Conocidas')
+                            ->hint('Alergias y reacciones adversas')
+                            ->hintIcon('heroicon-o-exclamation-circle')
+                            ->hintColor('danger')
+                            ->placeholder('Ej: Penicilina, látex, anestésicos...')
                             ->rows(2),
                         
                         Forms\Components\Textarea::make('condiciones_medicas')
                             ->label('Condiciones Médicas')
+                            ->hint('Enfermedades y condiciones')
+                            ->hintIcon('heroicon-o-clipboard-document-list')
+                            ->hintColor('warning')
+                            ->placeholder('Ej: Hipertensión, diabetes, problemas cardíacos...')
                             ->rows(2),
                         
                         Forms\Components\Textarea::make('medicamentos_actuales')
                             ->label('Medicamentos Actuales')
+                            ->hint('Medicamentos en uso')
+                            ->hintIcon('heroicon-o-beaker')
+                            ->hintColor('info')
+                            ->placeholder('Ej: Metformina 500mg, Losartán...')
                             ->rows(2),
                     ]),
 
                 Forms\Components\Section::make('Información del Seguro')
+                    ->icon('heroicon-o-shield-check')
+                    ->iconColor('success')
                     ->schema([
                         Forms\Components\Grid::make(3)
                             ->schema([
                                 Forms\Components\TextInput::make('seguro_nombre')
                                     ->label('Nombre del Seguro')
+                                    ->prefixIcon('heroicon-o-building-office')
+                                    ->prefixIconColor('success')
+                                    ->placeholder('Ej: IMSS, ISSTE...')
                                     ->maxLength(255),
                                 
                                 Forms\Components\TextInput::make('seguro_numero_poliza')
                                     ->label('Número de Póliza')
+                                    ->prefixIcon('heroicon-o-credit-card')
+                                    ->prefixIconColor('success')
                                     ->maxLength(100),
                                 
                                 Forms\Components\DatePicker::make('seguro_vigencia')
                                     ->label('Vigencia del Seguro')
+                                    ->hint('Fecha de vencimiento')
+                                    ->hintIcon('heroicon-o-calendar-days')
+                                    ->hintColor('success')
                                     ->native(false)
                                     ->displayFormat('d/m/Y'),
                             ]),
                     ]),
 
                 Forms\Components\Section::make('Notas Adicionales')
+                    ->icon('heroicon-o-document-text')
                     ->schema([
                         Forms\Components\Textarea::make('notas_generales')
                             ->label('Notas Generales')
+                            ->hint('Observaciones importantes')
+                            ->hintIcon('heroicon-o-pencil-square')
+                            ->hintColor('primary')
+                            ->placeholder('Observaciones importantes del paciente...')
                             ->rows(3),
                         
                         Forms\Components\Toggle::make('activo')
                             ->label('Paciente Activo')
+                            ->onIcon('heroicon-s-check-circle')
+                            ->offIcon('heroicon-s-x-circle')
+                            ->onColor('success')
+                            ->offColor('danger')
                             ->default(true),
                     ]),
             ]);
@@ -204,6 +273,7 @@ class PacienteResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('numero_expediente')
                     ->label('ID')
+                    ->icon('heroicon-o-hashtag')
                     ->sortable()
                     ->searchable(),
                 
@@ -214,20 +284,24 @@ class PacienteResource extends Resource
                 
                 Tables\Columns\TextColumn::make('nombre_completo')
                     ->label('Nombre Completo')
+                    ->icon('heroicon-o-user')
                     ->sortable(['nombre', 'apellido_paterno'])
                     ->searchable(['nombre', 'apellido_paterno', 'apellido_materno']),
                 
                 Tables\Columns\TextColumn::make('telefono')
                     ->label('Teléfono')
+                    ->icon('heroicon-o-phone')
                     ->searchable(),
                 
                 Tables\Columns\TextColumn::make('edad')
                     ->label('Edad')
+                    ->icon('heroicon-o-calendar-days')
                     ->suffix(' años')
                     ->sortable('fecha_nacimiento'),
                 
                 Tables\Columns\TextColumn::make('ultima_visita')
                     ->label('Última Visita')
+                    ->icon('heroicon-o-clock')
                     ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->placeholder('Sin visitas'),
