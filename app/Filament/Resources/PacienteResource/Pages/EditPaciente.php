@@ -17,4 +17,20 @@ class EditPaciente extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    /**
+     * Redirect to the index page after updating a patient
+     */
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
+    /**
+     * Customize the success notification title
+     */
+    protected function getSavedNotificationTitle(): ?string
+    {
+        return 'Información del paciente actualizada';
+    }
 }
