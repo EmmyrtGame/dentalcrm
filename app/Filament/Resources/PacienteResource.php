@@ -16,6 +16,7 @@ use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 
 class PacienteResource extends Resource
 {
@@ -278,8 +279,22 @@ class PacienteResource extends Resource
                     ->schema([
                         Forms\Components\Toggle::make('tiene_seguro')
                             ->label('¿Tiene Seguro Médico?')
-                            ->live() // Reactividad inmediata
-                            ->default(false),
+                            ->live()
+                            ->afterStateHydrated(function (callable $set, ?\App\Models\Paciente $record) {
+                                $set('tiene_seguro',
+                                    filled($record?->seguro_nombre)
+                                || filled($record?->seguro_numero_poliza)
+                                || filled($record?->seguro_vigencia)
+                                );
+                            })
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                // Limpia los campos en el formulario cuando el usuario apaga el toggle
+                                if (! $state) {
+                                    $set('seguro_nombre', null);
+                                    $set('seguro_numero_poliza', null);
+                                    $set('seguro_vigencia', null);
+                                }
+                            }),
                         
                         Forms\Components\Grid::make(3)
                             ->schema([
