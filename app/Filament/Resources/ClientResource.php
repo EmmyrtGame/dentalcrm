@@ -16,8 +16,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class ClientResource extends Resource
 {
     protected static ?string $model = Client::class;
+    protected static ?string $modelLabel = 'cliente';
+    protected static ?string $pluralModelLabel = 'clientes';
     protected static ?string $tenantRelationshipName = 'clients';
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     public static function form(Form $form): Form
     {
@@ -25,11 +27,13 @@ class ClientResource extends Resource
             ->schema([
                 // Nombre del cliente
                 Forms\Components\TextInput::make('name')
+                    ->label('Nombre del Cliente') // Etiqueta del campo
                     ->required()      // validación obligatoria[1]
                     ->maxLength(255),
 
                 // Correo electrónico
                 Forms\Components\TextInput::make('email')
+                    ->label('Correo Electrónico') // Etiqueta del campo
                     ->email()
                     ->required()      // validación obligatoria[1]
                     ->unique(         // único en la tabla, se ignora el registro actual al editar
