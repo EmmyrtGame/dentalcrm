@@ -15,6 +15,8 @@ use Filament\Tables\Filters\Filter;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\IconEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 
@@ -42,8 +44,8 @@ class PacienteResource extends Resource
         if ($state) {
             $formatted = preg_replace('/[^0-9]/', '', $state);
             if (strlen($formatted) === 10) {
-                $formatted = substr($formatted, 0, 3) . '-' . 
-                            substr($formatted, 3, 3) . '-' . 
+                $formatted = substr($formatted, 0, 3) . '-' .
+                            substr($formatted, 3, 3) . '-' .
                             substr($formatted, 6);
                 $set($fieldName, $formatted);
             }
@@ -63,7 +65,7 @@ class PacienteResource extends Resource
                             ->unique(ignoreRecord: true)
                             ->disabled()
                             ->dehydrated(false),
-                        
+
                         Forms\Components\Grid::make(3)
                             ->schema([
                                 Forms\Components\TextInput::make('nombre')
@@ -79,21 +81,21 @@ class PacienteResource extends Resource
                                         }
                                     })
                                     ->maxLength(255),
-                                
+
                                 Forms\Components\TextInput::make('apellido_paterno')
                                     ->label('Apellido Paterno')
                                     ->prefixIcon('heroicon-o-user-group')
                                     ->required()
                                     ->live(onBlur: true)
                                     ->maxLength(255),
-                                
+
                                 Forms\Components\TextInput::make('apellido_materno')
                                     ->label('Apellido Materno')
                                     ->prefixIcon('heroicon-o-user-group')
                                     ->live(onBlur: true)
                                     ->maxLength(255),
                             ]),
-                        
+
                         // Campo calculado dinámicamente
                         Forms\Components\Placeholder::make('nombre_completo_preview')
                             ->label('Vista Previa del Nombre')
@@ -101,10 +103,10 @@ class PacienteResource extends Resource
                                 $nombre = $get('nombre') ?? '';
                                 $apellidoP = $get('apellido_paterno') ?? '';
                                 $apellidoM = $get('apellido_materno') ?? '';
-                                
+
                                 return trim("$nombre $apellidoP $apellidoM") ?: 'Esperando datos...';
                             }),
-                        
+
                         Forms\Components\Grid::make(3)
                             ->schema([
                                 Forms\Components\DatePicker::make('fecha_nacimiento')
@@ -124,7 +126,7 @@ class PacienteResource extends Resource
                                     ->native(false)
                                     ->displayFormat('d/m/Y')
                                     ->maxDate(now()),
-                                
+
                                 Forms\Components\Select::make('sexo')
                                     ->label('Sexo')
                                     ->hint('Género del paciente')
@@ -137,7 +139,7 @@ class PacienteResource extends Resource
                                         'femenino' => 'Femenino',
                                         'otro' => 'Otro',
                                     ]),
-                                
+
                                 // Campo calculado que muestra la edad
                                 Forms\Components\Placeholder::make('edad_calculada')
                                     ->label('Edad Calculada')
@@ -162,7 +164,7 @@ class PacienteResource extends Resource
                                     ->prefixIconColor('success')
                                     ->required()
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn ($state, callable $set) => 
+                                    ->afterStateUpdated(fn ($state, callable $set) =>
                                         self::formatearTelefono($state, $set, 'telefono'))
                                     ->tel()
                                     ->rules(['regex:/^[\d\s-]{10,20}$/'])
@@ -171,13 +173,13 @@ class PacienteResource extends Resource
                                         'required' => 'El teléfono principal es obligatorio.'
                                     ])
                                     ->maxLength(20),
-                                
+
                                 Forms\Components\TextInput::make('telefono_secundario')
                                     ->label('Teléfono Secundario')
                                     ->prefixIcon('heroicon-o-device-phone-mobile')
                                     ->prefixIconColor('gray')
                                     ->live(onBlur: true)
-                                    ->afterStateUpdated(fn ($state, callable $set) => 
+                                    ->afterStateUpdated(fn ($state, callable $set) =>
                                         self::formatearTelefono($state, $set, 'telefono_secundario'))
                                     ->tel()
                                     ->rules(['nullable', 'regex:/^[\d\s-]{10,20}$/'])
@@ -186,7 +188,7 @@ class PacienteResource extends Resource
                                     ])
                                     ->maxLength(20),
                             ]),
-                        
+
                         Forms\Components\TextInput::make('email')
                             ->label('Correo Electrónico')
                             ->prefixIcon('heroicon-o-envelope')
@@ -202,26 +204,15 @@ class PacienteResource extends Resource
                             })
                             ->email()
                             ->maxLength(255),
-                        
-                        // Indicador visual de validación
-                        Forms\Components\Placeholder::make('email_valido')
-                            ->label('Estado del Email')
-                            ->content(function (Get $get): string {
-                                $email = $get('email');
-                                if (!$email) return 'Esperando email...';
-                                
-                                return filter_var($email, FILTER_VALIDATE_EMAIL) 
-                                    ? '✅ Email válido' 
-                                    : '❌ Email inválido';
-                            }),
-                            Forms\Components\Textarea::make('direccion')
+
+                        Forms\Components\Textarea::make('direccion')
                             ->label('Dirección')
                             ->hint('Dirección completa del paciente')
                             ->hintIcon('heroicon-o-map-pin')
                             ->hintColor('primary')
                             ->required()
                             ->rows(2),
-                        
+
                         Forms\Components\Grid::make(3)
                             ->schema([
                                 Forms\Components\TextInput::make('ciudad')
@@ -229,13 +220,13 @@ class PacienteResource extends Resource
                                     ->prefixIcon('heroicon-o-building-office-2')
                                     ->required()
                                     ->maxLength(100),
-                                
+
                                 Forms\Components\TextInput::make('estado')
                                     ->label('Estado')
                                     ->prefixIcon('heroicon-o-map')
                                     ->required()
                                     ->maxLength(100),
-                                
+
                                 Forms\Components\TextInput::make('codigo_postal')
                                     ->label('Código Postal')
                                     ->prefixIcon('heroicon-o-map-pin')
@@ -256,14 +247,14 @@ class PacienteResource extends Resource
                                     ->prefixIcon('heroicon-o-user-plus')
                                     ->prefixIconColor('danger')
                                     ->maxLength(255),
-                                
+
                                 Forms\Components\TextInput::make('contacto_emergencia_telefono')
                                     ->label('Teléfono de Emergencia')
                                     ->prefixIcon('heroicon-o-phone-arrow-up-right')
                                     ->prefixIconColor('danger')
                                     ->tel()
                                     ->maxLength(20),
-                                
+
                                 Forms\Components\TextInput::make('contacto_emergencia_relacion')
                                     ->label('Relación')
                                     ->prefixIcon('heroicon-o-heart')
@@ -295,7 +286,7 @@ class PacienteResource extends Resource
                                     $set('seguro_vigencia', null);
                                 }
                             }),
-                        
+
                         Forms\Components\Grid::make(3)
                             ->schema([
                                 Forms\Components\TextInput::make('seguro_nombre')
@@ -305,14 +296,14 @@ class PacienteResource extends Resource
                                     ->placeholder('Ej: IMSS, ISSTE...')
                                     ->hidden(fn (Get $get): bool => !$get('tiene_seguro')) // Se oculta dinámicamente
                                     ->maxLength(255),
-                                
+
                                 Forms\Components\TextInput::make('seguro_numero_poliza')
                                     ->label('Número de Póliza')
                                     ->prefixIcon('heroicon-o-credit-card')
                                     ->prefixIconColor('success')
                                     ->hidden(fn (Get $get): bool => !$get('tiene_seguro'))
                                     ->maxLength(100),
-                                
+
                                 Forms\Components\DatePicker::make('seguro_vigencia')
                                     ->label('Vigencia del Seguro')
                                     ->hint('Fecha de vencimiento')
@@ -325,7 +316,7 @@ class PacienteResource extends Resource
                                         if ($state) {
                                             $vencimiento = \Carbon\Carbon::parse($state);
                                             $diasRestantes = floor(now()->diffInDays($vencimiento, false));
-                                            
+
                                             if ($diasRestantes < 30 && $diasRestantes > 0) {
                                                 $set('alerta_seguro', "⚠️ Seguro vence en $diasRestantes días");
                                             } elseif ($diasRestantes <= 0) {
@@ -338,7 +329,7 @@ class PacienteResource extends Resource
                                     ->native(false)
                                     ->displayFormat('d/m/Y'),
                             ]),
-                        
+
                         // Alerta dinámica del estado del seguro
                         Forms\Components\Placeholder::make('alerta_seguro')
                             ->label('Estado del Seguro')
@@ -346,16 +337,16 @@ class PacienteResource extends Resource
                             ->content(function (Get $get): string {
                                 $vigencia = $get('seguro_vigencia');
                                 if (!$vigencia) return 'Ingresa fecha de vigencia';
-                                
+
                                 $vencimiento = \Carbon\Carbon::parse($vigencia);
                                 $diasRestantes = floor(now()->diffInDays($vencimiento, false));
-                                
+
                                 if ($diasRestantes < 30 && $diasRestantes > 0) {
                                     return "⚠️ Seguro vence en $diasRestantes días";
                                 } elseif ($diasRestantes <= 0) {
                                     return '🚨 Seguro vencido';
                                 }
-                                
+
                                 return '✅ Seguro vigente';
                             }),
                     ]),
@@ -371,36 +362,36 @@ class PacienteResource extends Resource
                     ->icon('heroicon-o-hashtag')
                     ->sortable()
                     ->searchable(),
-                
-                Tables\Columns\ImageColumn::make('fotografia')
+
+                Tables\Columns\ImageColumn::make('fot FOTOGRAFIA') // Ajustado según documentación de Filament 3.0
                     ->label('Foto')
                     ->circular()
                     ->defaultImageUrl(url('/images/default-avatar.png')),
-                
+
                 Tables\Columns\TextColumn::make('nombre_completo')
                     ->label('Nombre Completo')
                     ->icon('heroicon-o-user')
                     ->sortable(['nombre', 'apellido_paterno'])
                     ->searchable(['nombre', 'apellido_paterno', 'apellido_materno']),
-                
+
                 Tables\Columns\TextColumn::make('telefono')
                     ->label('Teléfono')
                     ->icon('heroicon-o-phone')
                     ->searchable(),
-                
+
                 Tables\Columns\TextColumn::make('edad')
                     ->label('Edad')
                     ->icon('heroicon-o-calendar-days')
                     ->suffix(' años')
                     ->sortable('fecha_nacimiento'),
-                
+
                 Tables\Columns\TextColumn::make('ultima_visita')
                     ->label('Última Visita')
                     ->icon('heroicon-o-clock')
                     ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->placeholder('Sin visitas'),
-                
+
                 Tables\Columns\IconColumn::make('activo')
                     ->label('Estado')
                     ->boolean()
@@ -417,14 +408,14 @@ class PacienteResource extends Resource
                         'femenino' => 'Femenino',
                         'otro' => 'Otro',
                     ]),
-                
+
                 SelectFilter::make('activo')
                     ->label('Estado')
                     ->options([
                         '1' => 'Activo',
                         '0' => 'Inactivo',
                     ]),
-                
+
                 Filter::make('con_seguro')
                     ->label('Con Seguro Médico')
                     ->query(fn (Builder $query): Builder => $query->whereNotNull('seguro_nombre')),
@@ -447,41 +438,129 @@ class PacienteResource extends Resource
         return $infolist
             ->schema([
                 Section::make('Información Personal')
+                    ->icon('heroicon-o-user')
                     ->schema([
+                        ImageEntry::make('fotografia')
+                            ->label('Fotografía')
+                            ->circular()
+                            ->defaultImageUrl(url('/images/default-avatar.png')),
+
                         TextEntry::make('numero_expediente')
                             ->label('Número de Expediente'),
+
+                        TextEntry::make('nombre')
+                            ->label('Nombre(s)'),
+
+                        TextEntry::make('apellido_paterno')
+                            ->label('Apellido Paterno'),
+
+                        TextEntry::make('apellido_materno')
+                            ->label('Apellido Materno'),
+
                         TextEntry::make('nombre_completo')
                             ->label('Nombre Completo'),
+
+                        TextEntry::make('fecha_nacimiento')
+                            ->label('Fecha de Nacimiento')
+                            ->date('d/m/Y'),
+
                         TextEntry::make('edad')
                             ->label('Edad')
                             ->suffix(' años'),
+
                         TextEntry::make('sexo')
                             ->label('Sexo')
                             ->badge(),
                     ])
-                    ->columns(2),
-                
-                Section::make('Contacto')
+                    ->columns(3),
+
+                Section::make('Información de Contacto')
+                    ->icon('heroicon-o-phone')
                     ->schema([
                         TextEntry::make('telefono')
                             ->label('Teléfono Principal'),
+
+                        TextEntry::make('telefono_secundario')
+                            ->label('Teléfono Secundario'),
+
                         TextEntry::make('email')
-                            ->label('Email'),
+                            ->label('Correo Electrónico'),
+
                         TextEntry::make('direccion')
                             ->label('Dirección'),
+
+                        TextEntry::make('ciudad')
+                            ->label('Ciudad'),
+
+                        TextEntry::make('estado')
+                            ->label('Estado'),
+
+                        TextEntry::make('codigo_postal')
+                            ->label('Código Postal'),
                     ])
-                    ->columns(2),
-                
-                Section::make('Información Médica')
+                    ->columns(3),
+
+                Section::make('Contacto de Emergencia')
+                    ->icon('heroicon-o-exclamation-triangle')
+                    ->iconColor('danger')
                     ->schema([
-                        TextEntry::make('alergias')
-                            ->label('Alergias'),
-                        TextEntry::make('condiciones_medicas')
-                            ->label('Condiciones Médicas'),
-                        TextEntry::make('seguro_nombre')
-                            ->label('Seguro Médico'),
+                        TextEntry::make('contacto_emergencia_nombre')
+                            ->label('Nombre del Contacto'),
+
+                        TextEntry::make('contacto_emergencia_telefono')
+                            ->label('Teléfono de Emergencia'),
+
+                        TextEntry::make('contacto_emergencia_relacion')
+                            ->label('Relación'),
                     ])
-                    ->columns(1)
+                    ->columns(3),
+
+                Section::make('Información del Seguro')
+                    ->icon('heroicon-o-shield-check')
+                    ->iconColor('success')
+                    ->schema([
+                        IconEntry::make('tiene_seguro')
+                            ->label('¿Tiene Seguro Médico?')
+                            ->boolean()
+                            ->trueIcon('heroicon-o-check-circle')
+                            ->falseIcon('heroicon-o-x-circle')
+                            ->trueColor('success')
+                            ->falseColor('danger'),
+
+                        TextEntry::make('seguro_nombre')
+                            ->label('Nombre del Seguro')
+                            ->hidden(fn ($record): bool => !$record->tiene_seguro),
+
+                        TextEntry::make('seguro_numero_poliza')
+                            ->label('Número de Póliza')
+                            ->hidden(fn ($record): bool => !$record->tiene_seguro),
+
+                        TextEntry::make('seguro_vigencia')
+                            ->label('Vigencia del Seguro')
+                            ->date('d/m/Y')
+                            ->hidden(fn ($record): bool => !$record->tiene_seguro),
+
+                        TextEntry::make('alerta_seguro')
+                            ->label('Estado del Seguro')
+                            ->hidden(fn ($record): bool => !$record->tiene_seguro)
+                            ->getStateUsing(function ($record): string {
+                                if (!$record->tiene_seguro || !$record->seguro_vigencia) {
+                                    return 'N/A';
+                                }
+
+                                $vencimiento = \Carbon\Carbon::parse($record->seguro_vigencia);
+                                $diasRestantes = floor(now()->diffInDays($vencimiento, false));
+
+                                if ($diasRestantes < 30 && $diasRestantes > 0) {
+                                    return "⚠️ Seguro vence en $diasRestantes días";
+                                } elseif ($diasRestantes <= 0) {
+                                    return '🚨 Seguro vencido';
+                                }
+
+                                return '✅ Seguro vigente';
+                            }),
+                    ])
+                    ->columns(2)
                     ->collapsible(),
             ]);
     }

@@ -49,6 +49,16 @@ class Paciente extends Model
         'activo' => 'boolean',
     ];
 
+    protected $appends = [
+        'tiene_seguro', // Agrega esta línea
+    ];
+
+    // Accessor para verificar si tiene seguro
+    public function getTieneSeguroAttribute(): bool
+    {
+        return filled($this->seguro_nombre) || filled($this->seguro_numero_poliza) || filled($this->seguro_vigencia);
+    }
+
     // Accessor para nombre completo
     public function getNombreCompletoAttribute(): string
     {
@@ -79,7 +89,6 @@ class Paciente extends Model
         return str_pad($ultimoNumero, 4, '0', STR_PAD_LEFT);
     }
 
-    // Scope para búsqueda (RF-003)
     public function scopeBuscar(Builder $query, string $termino): Builder
     {
         return $query->where(function ($q) use ($termino) {
@@ -91,7 +100,6 @@ class Paciente extends Model
         });
     }
 
-    // Scope para pacientes activos
     public function scopeActivos(Builder $query): Builder
     {
         return $query->where('activo', true);
