@@ -244,6 +244,14 @@ class PacienteResource extends Resource
                                     ->maxLength(10)
                                     ->placeholder('Ingresa el código postal'),
                             ]),
+
+                        Forms\Components\Textarea::make('notas_generales')
+                        ->label('Notas Generales')
+                        ->hint('Ingresa notas o datos relevantes del paciente')
+                        ->hintIcon('heroicon-o-pencil')
+                        ->hintColor('primary')
+                        ->rows(2)
+                        ->placeholder('Es alérgico a...'),
                     ]),
 
                 Forms\Components\Section::make('Contacto de Emergencia')
@@ -535,6 +543,11 @@ class PacienteResource extends Resource
                             ->label('Código Postal')
                             ->iconColor('primary')
                             ->icon('heroicon-o-map-pin'),
+                        
+                        TextEntry::make('notas_generales')
+                            ->label('Notas Generales')
+                            ->iconColor('primary')
+                            ->icon('heroicon-o-pencil'),
                     ])
                     ->columns(3),
 
