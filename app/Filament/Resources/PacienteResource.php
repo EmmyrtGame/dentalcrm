@@ -375,7 +375,8 @@ class PacienteResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('numero_expediente')
-                    ->label('ID')
+                    ->label('Expediente')
+                    ->iconColor('primary')
                     ->icon('heroicon-o-hashtag')
                     ->sortable()
                     ->searchable(),
@@ -387,17 +388,20 @@ class PacienteResource extends Resource
 
                 Tables\Columns\TextColumn::make('nombre_completo')
                     ->label('Nombre Completo')
+                    ->iconColor('primary')
                     ->icon('heroicon-o-user')
                     ->sortable(['nombre', 'apellido_paterno'])
                     ->searchable(['nombre', 'apellido_paterno', 'apellido_materno']),
 
                 Tables\Columns\TextColumn::make('telefono')
                     ->label('Teléfono')
+                    ->iconColor('primary')
                     ->icon('heroicon-o-phone')
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('edad')
                     ->label('Edad')
+                    ->iconColor('primary')
                     ->icon('heroicon-o-calendar-days')
                     ->suffix(' años')
                     ->sortable('fecha_nacimiento'),
@@ -408,14 +412,6 @@ class PacienteResource extends Resource
                     ->dateTime('d/m/Y H:i')
                     ->sortable()
                     ->placeholder('Sin visitas'),
-
-                Tables\Columns\IconColumn::make('activo')
-                    ->label('Estado')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('danger'),
             ])
             ->filters([
                 SelectFilter::make('sexo')
@@ -424,13 +420,6 @@ class PacienteResource extends Resource
                         'masculino' => 'Masculino',
                         'femenino' => 'Femenino',
                         'otro' => 'Otro',
-                    ]),
-
-                SelectFilter::make('activo')
-                    ->label('Estado')
-                    ->options([
-                        '1' => 'Activo',
-                        '0' => 'Inactivo',
                     ]),
 
                 Filter::make('con_seguro')
