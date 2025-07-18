@@ -58,19 +58,23 @@ class PacienteResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Información Personal')
                     ->icon('heroicon-o-user')
+                    ->iconColor('primary')
                     ->schema([
                         Forms\Components\TextInput::make('numero_expediente')
                             ->label('Número de Expediente')
                             ->prefixIcon('heroicon-o-hashtag')
+                            ->prefixIconColor('primary')
                             ->unique(ignoreRecord: true)
                             ->disabled()
-                            ->dehydrated(false),
+                            ->dehydrated(false)
+                            ->placeholder('Se genera automáticamente'),
 
                         Forms\Components\Grid::make(3)
                             ->schema([
                                 Forms\Components\TextInput::make('nombre')
                                     ->label('Nombre(s)')
                                     ->prefixIcon('heroicon-o-user')
+                                    ->prefixIconColor('primary')
                                     ->required()
                                     ->live(onBlur: true) // Actualiza al perder foco
                                     ->afterStateUpdated(function ($state, callable $set) {
@@ -80,32 +84,26 @@ class PacienteResource extends Resource
                                             $set('email_sugerido', $email);
                                         }
                                     })
-                                    ->maxLength(255),
+                                    ->maxLength(255)
+                                    ->placeholder('Ingresa el nombre'),
 
                                 Forms\Components\TextInput::make('apellido_paterno')
                                     ->label('Apellido Paterno')
                                     ->prefixIcon('heroicon-o-user-group')
+                                    ->prefixIconColor('primary')
                                     ->required()
                                     ->live(onBlur: true)
-                                    ->maxLength(255),
+                                    ->maxLength(255)
+                                    ->placeholder('Ingresa el apellido paterno'),
 
                                 Forms\Components\TextInput::make('apellido_materno')
                                     ->label('Apellido Materno')
                                     ->prefixIcon('heroicon-o-user-group')
+                                    ->prefixIconColor('primary')
                                     ->live(onBlur: true)
-                                    ->maxLength(255),
+                                    ->maxLength(255)
+                                    ->placeholder('Ingresa el apellido materno'),
                             ]),
-
-                        // Campo calculado dinámicamente
-                        Forms\Components\Placeholder::make('nombre_completo_preview')
-                            ->label('Vista Previa del Nombre')
-                            ->content(function (Get $get): string {
-                                $nombre = $get('nombre') ?? '';
-                                $apellidoP = $get('apellido_paterno') ?? '';
-                                $apellidoM = $get('apellido_materno') ?? '';
-
-                                return trim("$nombre $apellidoP $apellidoM") ?: 'Esperando datos...';
-                            }),
 
                         Forms\Components\Grid::make(3)
                             ->schema([
@@ -125,7 +123,8 @@ class PacienteResource extends Resource
                                     })
                                     ->native(false)
                                     ->displayFormat('d/m/Y')
-                                    ->maxDate(now()),
+                                    ->maxDate(now())
+                                    ->placeholder('Selecciona la fecha de nacimiento'),
 
                                 Forms\Components\Select::make('sexo')
                                     ->label('Sexo')
@@ -138,7 +137,8 @@ class PacienteResource extends Resource
                                         'masculino' => 'Masculino',
                                         'femenino' => 'Femenino',
                                         'otro' => 'Otro',
-                                    ]),
+                                    ])
+                                    ->placeholder('Selecciona el sexo'),
 
                                 // Campo calculado que muestra la edad
                                 Forms\Components\Placeholder::make('edad_calculada')
@@ -155,13 +155,14 @@ class PacienteResource extends Resource
 
                 Forms\Components\Section::make('Información de Contacto')
                     ->icon('heroicon-o-phone')
+                    ->iconColor('primary')
                     ->schema([
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\TextInput::make('telefono')
                                     ->label('Teléfono Principal')
                                     ->prefixIcon('heroicon-o-phone')
-                                    ->prefixIconColor('success')
+                                    ->prefixIconColor('primary')
                                     ->required()
                                     ->live(onBlur: true)
                                     ->afterStateUpdated(fn ($state, callable $set) =>
@@ -172,7 +173,8 @@ class PacienteResource extends Resource
                                         'regex' => 'El teléfono debe contener entre 10 y 20 dígitos, y puede incluir guiones o espacios.',
                                         'required' => 'El teléfono principal es obligatorio.'
                                     ])
-                                    ->maxLength(20),
+                                    ->maxLength(20)
+                                    ->placeholder('Ingresa el teléfono principal'),
 
                                 Forms\Components\TextInput::make('telefono_secundario')
                                     ->label('Teléfono Secundario')
@@ -186,7 +188,8 @@ class PacienteResource extends Resource
                                     ->validationMessages([
                                         'regex' => 'El teléfono debe contener entre 10 y 20 dígitos, y puede incluir guiones o espacios.'
                                     ])
-                                    ->maxLength(20),
+                                    ->maxLength(20)
+                                    ->placeholder('Ingresa el teléfono secundario'),
                             ]),
 
                         Forms\Components\TextInput::make('email')
@@ -203,7 +206,8 @@ class PacienteResource extends Resource
                                 }
                             })
                             ->email()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->placeholder('Ingresa el correo electrónico'),
 
                         Forms\Components\Textarea::make('direccion')
                             ->label('Dirección')
@@ -211,28 +215,34 @@ class PacienteResource extends Resource
                             ->hintIcon('heroicon-o-map-pin')
                             ->hintColor('primary')
                             ->required()
-                            ->rows(2),
+                            ->rows(2)
+                            ->placeholder('Ingresa la dirección completa'),
 
                         Forms\Components\Grid::make(3)
                             ->schema([
                                 Forms\Components\TextInput::make('ciudad')
                                     ->label('Ciudad')
                                     ->prefixIcon('heroicon-o-building-office-2')
+                                    ->prefixIconColor('danger')
                                     ->required()
-                                    ->maxLength(100),
+                                    ->maxLength(100)
+                                    ->placeholder('Ingresa la ciudad'),
 
                                 Forms\Components\TextInput::make('estado')
                                     ->label('Estado')
                                     ->prefixIcon('heroicon-o-map')
+                                    ->prefixIconColor('danger')
                                     ->required()
-                                    ->maxLength(100),
+                                    ->maxLength(100)
+                                    ->placeholder('Ingresa el estado'),
 
                                 Forms\Components\TextInput::make('codigo_postal')
                                     ->label('Código Postal')
                                     ->prefixIcon('heroicon-o-map-pin')
-                                    ->prefixIconColor('warning')
+                                    ->prefixIconColor('danger')
                                     ->required()
-                                    ->maxLength(10),
+                                    ->maxLength(10)
+                                    ->placeholder('Ingresa el código postal'),
                             ]),
                     ]),
 
@@ -246,20 +256,23 @@ class PacienteResource extends Resource
                                     ->label('Nombre del Contacto')
                                     ->prefixIcon('heroicon-o-user-plus')
                                     ->prefixIconColor('danger')
-                                    ->maxLength(255),
+                                    ->maxLength(255)
+                                    ->placeholder('Ingresa el nombre del contacto'),
 
                                 Forms\Components\TextInput::make('contacto_emergencia_telefono')
                                     ->label('Teléfono de Emergencia')
                                     ->prefixIcon('heroicon-o-phone-arrow-up-right')
                                     ->prefixIconColor('danger')
                                     ->tel()
-                                    ->maxLength(20),
+                                    ->maxLength(20)
+                                    ->placeholder('Ingresa el teléfono de emergencia'),
 
                                 Forms\Components\TextInput::make('contacto_emergencia_relacion')
                                     ->label('Relación')
                                     ->prefixIcon('heroicon-o-heart')
                                     ->prefixIconColor('danger')
-                                    ->maxLength(100),
+                                    ->maxLength(100)
+                                    ->placeholder('Ingresa la relación'),
                             ]),
                     ]),
 
@@ -270,6 +283,7 @@ class PacienteResource extends Resource
                     ->schema([
                         Forms\Components\Toggle::make('tiene_seguro')
                             ->label('¿Tiene Seguro Médico?')
+                            ->onColor('success')
                             ->live()
                             ->afterStateHydrated(function (callable $set, ?\App\Models\Paciente $record) {
                                 $set('tiene_seguro',
@@ -295,14 +309,16 @@ class PacienteResource extends Resource
                                     ->prefixIconColor('success')
                                     ->placeholder('Ej: IMSS, ISSTE...')
                                     ->hidden(fn (Get $get): bool => !$get('tiene_seguro')) // Se oculta dinámicamente
-                                    ->maxLength(255),
+                                    ->maxLength(255)
+                                    ->placeholder('Ingresa el nombre del seguro'),
 
                                 Forms\Components\TextInput::make('seguro_numero_poliza')
                                     ->label('Número de Póliza')
                                     ->prefixIcon('heroicon-o-credit-card')
                                     ->prefixIconColor('success')
                                     ->hidden(fn (Get $get): bool => !$get('tiene_seguro'))
-                                    ->maxLength(100),
+                                    ->maxLength(100)
+                                    ->placeholder('Ingresa el número de póliza'),
 
                                 Forms\Components\DatePicker::make('seguro_vigencia')
                                     ->label('Vigencia del Seguro')
@@ -327,7 +343,8 @@ class PacienteResource extends Resource
                                         }
                                     })
                                     ->native(false)
-                                    ->displayFormat('d/m/Y'),
+                                    ->displayFormat('d/m/Y')
+                                    ->placeholder('Selecciona la fecha de vigencia'),
                             ]),
 
                         // Alerta dinámica del estado del seguro
