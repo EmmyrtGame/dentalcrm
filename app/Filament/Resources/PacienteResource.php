@@ -456,6 +456,7 @@ class PacienteResource extends Resource
             ->schema([
                 Section::make('Información Personal')
                     ->icon('heroicon-o-user')
+                    ->iconColor('primary')
                     ->schema([
                         ImageEntry::make('fotografia')
                             ->label('Fotografía')
@@ -463,57 +464,88 @@ class PacienteResource extends Resource
                             ->defaultImageUrl(url('/images/default-avatar.png')),
 
                         TextEntry::make('numero_expediente')
-                            ->label('Número de Expediente'),
+                            ->label('Número de Expediente')
+                            ->iconColor('primary')
+                            ->icon('heroicon-o-hashtag'),
 
                         TextEntry::make('nombre')
-                            ->label('Nombre(s)'),
+                            ->label('Nombre(s)')
+                            ->iconColor('primary')
+                            ->icon('heroicon-o-user'),
 
                         TextEntry::make('apellido_paterno')
-                            ->label('Apellido Paterno'),
+                            ->label('Apellido Paterno')
+                            ->iconColor('primary')
+                            ->icon('heroicon-o-user-group'),
 
                         TextEntry::make('apellido_materno')
-                            ->label('Apellido Materno'),
+                            ->label('Apellido Materno')
+                            ->iconColor('primary')
+                            ->icon('heroicon-o-user-group'),
 
                         TextEntry::make('nombre_completo')
-                            ->label('Nombre Completo'),
+                            ->label('Nombre Completo')
+                            ->iconColor('primary')
+                            ->icon('heroicon-o-identification'),
 
                         TextEntry::make('fecha_nacimiento')
                             ->label('Fecha de Nacimiento')
+                            ->iconColor('primary')
+                            ->icon('heroicon-o-calendar-days')
                             ->date('d/m/Y'),
 
                         TextEntry::make('edad')
                             ->label('Edad')
+                            ->iconColor('primary')
+                            ->icon('heroicon-o-clock')
                             ->suffix(' años'),
 
                         TextEntry::make('sexo')
                             ->label('Sexo')
+                            ->iconColor('primary')
+                            ->icon('heroicon-o-user-circle')
                             ->badge(),
                     ])
                     ->columns(3),
 
                 Section::make('Información de Contacto')
                     ->icon('heroicon-o-phone')
+                    ->iconColor('primary')
                     ->schema([
                         TextEntry::make('telefono')
-                            ->label('Teléfono Principal'),
+                            ->label('Teléfono Principal')
+                            ->iconColor('primary')
+                            ->icon('heroicon-o-phone'),
 
                         TextEntry::make('telefono_secundario')
-                            ->label('Teléfono Secundario'),
+                            ->label('Teléfono Secundario')
+                            ->iconColor('primary')
+                            ->icon('heroicon-o-device-phone-mobile'),
 
                         TextEntry::make('email')
-                            ->label('Correo Electrónico'),
+                            ->label('Correo Electrónico')
+                            ->iconColor('primary')
+                            ->icon('heroicon-o-envelope'),
 
                         TextEntry::make('direccion')
-                            ->label('Dirección'),
+                            ->label('Dirección')
+                            ->iconColor('primary')
+                            ->icon('heroicon-o-map-pin'),
 
                         TextEntry::make('ciudad')
-                            ->label('Ciudad'),
+                            ->label('Ciudad')
+                            ->iconColor('primary')
+                            ->icon('heroicon-o-building-office-2'),
 
                         TextEntry::make('estado')
-                            ->label('Estado'),
+                            ->label('Estado')
+                            ->iconColor('primary')
+                            ->icon('heroicon-o-map'),
 
                         TextEntry::make('codigo_postal')
-                            ->label('Código Postal'),
+                            ->label('Código Postal')
+                            ->iconColor('primary')
+                            ->icon('heroicon-o-map-pin'),
                     ])
                     ->columns(3),
 
@@ -522,13 +554,19 @@ class PacienteResource extends Resource
                     ->iconColor('danger')
                     ->schema([
                         TextEntry::make('contacto_emergencia_nombre')
-                            ->label('Nombre del Contacto'),
+                            ->label('Nombre del Contacto')
+                            ->iconColor('danger')
+                            ->icon('heroicon-o-user-plus'),
 
                         TextEntry::make('contacto_emergencia_telefono')
-                            ->label('Teléfono de Emergencia'),
+                            ->label('Teléfono de Emergencia')
+                            ->iconColor('danger')
+                            ->icon('heroicon-o-phone-arrow-up-right'),
 
                         TextEntry::make('contacto_emergencia_relacion')
-                            ->label('Relación'),
+                            ->label('Relación')
+                            ->iconColor('danger')
+                            ->icon('heroicon-o-heart'),
                     ])
                     ->columns(3),
 
@@ -538,6 +576,7 @@ class PacienteResource extends Resource
                     ->schema([
                         IconEntry::make('tiene_seguro')
                             ->label('¿Tiene Seguro Médico?')
+                            ->icon('heroicon-o-check-circle')
                             ->boolean()
                             ->trueIcon('heroicon-o-check-circle')
                             ->falseIcon('heroicon-o-x-circle')
@@ -546,19 +585,27 @@ class PacienteResource extends Resource
 
                         TextEntry::make('seguro_nombre')
                             ->label('Nombre del Seguro')
+                            ->iconColor('success')
+                            ->icon('heroicon-o-building-office')
                             ->hidden(fn ($record): bool => !$record->tiene_seguro),
 
                         TextEntry::make('seguro_numero_poliza')
                             ->label('Número de Póliza')
+                            ->iconColor('success')
+                            ->icon('heroicon-o-credit-card')
                             ->hidden(fn ($record): bool => !$record->tiene_seguro),
 
                         TextEntry::make('seguro_vigencia')
                             ->label('Vigencia del Seguro')
+                            ->iconColor('success')
+                            ->icon('heroicon-o-calendar-days')
                             ->date('d/m/Y')
                             ->hidden(fn ($record): bool => !$record->tiene_seguro),
 
                         TextEntry::make('alerta_seguro')
                             ->label('Estado del Seguro')
+                            ->iconColor('success')
+                            ->icon('heroicon-o-exclamation-circle')
                             ->hidden(fn ($record): bool => !$record->tiene_seguro)
                             ->getStateUsing(function ($record): string {
                                 if (!$record->tiene_seguro || !$record->seguro_vigencia) {
