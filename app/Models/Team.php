@@ -19,4 +19,9 @@ class Team extends Model
     {
         return $this->hasMany(Paciente::class);
     }
+
+    public function expedientes()
+    {
+        return $this->hasMany(Expediente::class);
+    }
 }

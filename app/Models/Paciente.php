@@ -50,7 +50,7 @@ class Paciente extends Model
     ];
 
     protected $appends = [
-        'tiene_seguro', // Agrega esta línea
+        'tiene_seguro',
     ];
 
     // Accessor para verificar si tiene seguro
@@ -108,5 +108,15 @@ class Paciente extends Model
     public function team()
     {
         return $this->belongsTo(Team::class);
+    }
+
+    public function expedientes()
+    {
+        return $this->hasMany(Expediente::class);
+    }
+
+    public function expedienteReciente()
+    {
+        return $this->hasOne(Expediente::class)->latestOfMany();
     }
 }
