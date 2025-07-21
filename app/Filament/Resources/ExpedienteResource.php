@@ -92,7 +92,7 @@ class ExpedienteResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('numero_expediente')
-                    ->label('Exp.')
+                    ->label('Num. Exp.')
                     ->searchable()
                     ->sortable(),
 
@@ -134,7 +134,9 @@ class ExpedienteResource extends Resource
 
                 Filter::make('completado')
                     ->label('Pendientes')
-                    ->query(fn ($q) => $q->where('completado', false)),
+                    ->query(function ($query) {
+                        return $query->where('completado', false);
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

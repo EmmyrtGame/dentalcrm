@@ -61,7 +61,7 @@ class PacienteResource extends Resource
                     ->iconColor('primary')
                     ->schema([
                         Forms\Components\TextInput::make('numero_expediente')
-                            ->label('Número de Expediente')
+                            ->label('Número de Paciente')
                             ->prefixIcon('heroicon-o-hashtag')
                             ->prefixIconColor('primary')
                             ->unique(ignoreRecord: true)
@@ -383,7 +383,7 @@ class PacienteResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('numero_expediente')
-                    ->label('Expediente')
+                    ->label('Num. Paciente')
                     ->iconColor('primary')
                     ->icon('heroicon-o-hashtag')
                     ->sortable()
