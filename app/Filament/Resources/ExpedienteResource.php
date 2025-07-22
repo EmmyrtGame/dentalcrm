@@ -38,17 +38,23 @@ class ExpedienteResource extends Resource
                             ->label('Paciente')
                             ->relationship('paciente', 'nombre_completo')
                             ->searchable()
+                            ->preload()
                             ->required()
                             ->getSearchResultsUsing(function (string $search): array {
                                 $pacientes = Paciente::where('nombre', 'like', "%{$search}%")
                                     ->orWhere('apellido_paterno', 'like', "%{$search}%")
                                     ->orWhere('apellido_materno', 'like', "%{$search}%")
+                                    ->orderBy('created_at', 'desc')
                                     ->limit(50)
                                     ->get();
 
                                 return $pacientes->mapWithKeys(function ($paciente) {
                                     return [$paciente->getKey() => $paciente->nombre_completo];
                                 })->toArray();
+                            })
+                            ->default(function () {
+                                $ultimoPaciente = Paciente::latest()->first();
+                                return $ultimoPaciente ? $ultimoPaciente->id : null;
                             })
                             ->getOptionLabelFromRecordUsing(function (Paciente $record): string {
                                 return $record->nombre_completo;
