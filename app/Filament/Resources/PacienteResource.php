@@ -19,6 +19,8 @@ use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\IconEntry;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
+use Filament\Tables\Actions\Action;
+use Filament\Infolists\Components\Actions\Action as InfolistAction;
 
 class PacienteResource extends Resource
 {
@@ -407,13 +409,6 @@ class PacienteResource extends Resource
                     ->icon('heroicon-o-phone')
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('edad')
-                    ->label('Edad')
-                    ->iconColor('primary')
-                    ->icon('heroicon-o-calendar-days')
-                    ->suffix(' años')
-                    ->sortable('fecha_nacimiento'),
-
                 Tables\Columns\TextColumn::make('ultima_visita')
                     ->label('Última Visita')
                     ->icon('heroicon-o-clock')
@@ -437,6 +432,12 @@ class PacienteResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Action::make('exportPdf')
+                    ->label('Exportar PDF')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('info')
+                    ->url(fn (Paciente $record): string => route('paciente.export.pdf', $record))
+                    ->openUrlInNewTab(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
@@ -451,6 +452,13 @@ class PacienteResource extends Resource
     {
         return $infolist
             ->schema([
+                InfolistAction::make('exportPdf')
+                    ->label('Exportar a PDF')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('info')
+                    ->url(fn (Paciente $record): string => route('paciente.export.pdf', $record))
+                    ->openUrlInNewTab()
+                    ->columnSpanFull(),
                 Section::make('Información Personal')
                     ->icon('heroicon-o-user')
                     ->iconColor('primary')

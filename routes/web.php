@@ -2,10 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use App\Http\Controllers\PacientePdfController;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+Route::get('/pacientes/{record}/export-pdf', [PacientePdfController::class, 'generatePdf'])->name('paciente.export.pdf');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
