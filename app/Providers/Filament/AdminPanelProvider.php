@@ -8,6 +8,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -18,6 +19,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -58,7 +60,13 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->tenant(Team::class)
             ->tenantRegistration(RegisterTeam::class)
-            ->registration()
+            ->tenantMenuItems([
+                'register' => MenuItem::make()
+                    ->label('Registrar nuevo equipo')
+                    ->visible(fn (): bool => Auth::getUser()->teams()->count() === 0),
+                
+                'profile' => MenuItem::make()->label('Perfil del Equipo'), 
+            ]);
             ;
     }
 }

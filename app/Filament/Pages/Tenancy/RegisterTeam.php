@@ -30,4 +30,13 @@ class RegisterTeam extends RegisterTenant
 
         return $team;
     }
+
+    public function mount(): void
+    {
+        if (Auth::getUser()->teams()->exists()) {
+            abort(403);
+        }
+
+        parent::mount();
+    }
 }
