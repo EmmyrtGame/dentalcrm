@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\CitaResource\Pages;
+use App\Filament\Resources\CitaResource\Pages\Calendar;
 use App\Filament\Resources\CitaResource\RelationManagers;
 use App\Models\Cita;
 use Filament\Forms;
@@ -54,7 +55,10 @@ class CitaResource extends Resource
                     ->required()
                     ->displayFormat('F j, Y H:i')
                     ->firstDayOfWeek(1)
-                    ->minDate(now()),
+                    ->minDate(now())
+                    ->minutesStep(30)
+                    ->seconds(false)
+                    ->native(false),
                 \Filament\Forms\Components\TextInput::make('descripcion')
                     ->maxLength(255)
                     ->nullable(),

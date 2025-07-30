@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Cita extends Model
 {
@@ -32,5 +33,18 @@ class Cita extends Model
     public function team()
     {
         return $this->belongsTo(Team::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saving(function ($model) {
+            $date = Carbon::parse($model->fecha_cita);
+            $minutes = $date->minute;
+            if ($minutes % 30 !== 0) {
+                throw new \Exception('La cita debe programarse en intervalos de 30 minutos.');
+            }
+        });
     }
 }
