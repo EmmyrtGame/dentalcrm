@@ -71,24 +71,20 @@ class CitaResource extends Resource
                 ->firstDayOfWeek(1)
                 ->minDate(now())
                 ->default(now()->addDay()->setTime(9, 0))
-                ->minutesStep(30)
                 ->seconds(false)
                 ->native(false)
                 ->live(onBlur: true)
-                ->afterStateUpdated(function ($state, callable $set, callable $get, $component) {
-                    if ($state) {
-                        $date = \Carbon\Carbon::parse($state);
-                        $minutes = $date->minute;
-                        
-                        if (!in_array($minutes, [0, 30])) {
-                            $component->state(null);
-                            \Filament\Notifications\Notification::make()
-                                ->title('Hora inválida')
-                                ->body('La hora debe terminar en :00 o :30 minutos.')
-                                ->danger()
-                                ->send();
+                ->rule(function () {
+                    return function (string $attribute, $value, \Closure $fail) {
+                        if ($value) {
+                            $date = \Carbon\Carbon::parse($value);
+                            $minutes = $date->minute;
+                            
+                            if (!in_array($minutes, [0, 30])) {
+                                $fail('La hora debe terminar en :00 o :30 minutos.');
+                            }
                         }
-                    }
+                    };
                 }),
             \Filament\Forms\Components\Textarea::make('descripcion')
                 ->label('Descripción (opcional)')
