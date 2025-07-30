@@ -7,6 +7,7 @@ use App\Models\Paciente;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Infolists\Components\Actions;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -452,13 +453,15 @@ class PacienteResource extends Resource
     {
         return $infolist
             ->schema([
-                InfolistAction::make('exportPdf')
-                    ->label('Exportar a PDF')
-                    ->icon('heroicon-o-document-arrow-down')
-                    ->color('info')
-                    ->url(fn (Paciente $record): string => route('paciente.export.pdf', $record))
-                    ->openUrlInNewTab()
-                    ->columnSpanFull(),
+                Actions::make([
+                    InfolistAction::make('exportPdf')
+                        ->label('Exportar a PDF')
+                        ->icon('heroicon-o-document-arrow-down')
+                        ->color('info')
+                        ->url(fn (Paciente $record): string => route('paciente.export.pdf', $record))
+                        ->openUrlInNewTab(),
+                ])
+                ->columnSpanFull(),
                 Section::make('Información Personal')
                     ->icon('heroicon-o-user')
                     ->iconColor('primary')
