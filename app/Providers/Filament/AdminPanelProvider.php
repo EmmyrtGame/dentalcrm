@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Tenancy\RegisterTeam;
+use App\Filament\Resources\CitaResource\Widgets\CitaCalendarWidget;
 use App\Models\Team;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -43,6 +44,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
+                CitaCalendarWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -60,6 +62,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->tenant(Team::class)
             ->tenantRegistration(RegisterTeam::class)
+            ->plugins([
+                \Saade\FilamentFullCalendar\FilamentFullCalendarPlugin::make(),
+            ])
             ->tenantMenuItems([
                 'register' => MenuItem::make()
                     ->label('Registrar nuevo equipo')
@@ -67,6 +72,5 @@ class AdminPanelProvider extends PanelProvider
                 
                 'profile' => MenuItem::make()->label('Perfil del Equipo'), 
             ]);
-            ;
     }
 }

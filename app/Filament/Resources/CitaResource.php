@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CitaResource\Pages;
 use App\Filament\Resources\CitaResource\Pages\Calendar;
 use App\Filament\Resources\CitaResource\RelationManagers;
+use App\Filament\Resources\CitaResource\Widgets\CitaCalendarWidget;
 use App\Models\Cita;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
@@ -90,13 +91,6 @@ class CitaResource extends Resource
             ->bulkActions([
                 \Filament\Tables\Actions\DeleteBulkAction::make(),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
