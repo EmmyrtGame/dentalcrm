@@ -15,6 +15,10 @@ class Cita extends Model
         'team_id',
     ];
 
+    protected $casts = [
+        'fecha_cita' => 'datetime',
+    ];
+
     public function paciente()
     {
         return $this->belongsTo(Paciente::class);

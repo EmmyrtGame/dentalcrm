@@ -29,25 +29,33 @@ class CitaResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('patient_id')
-                ->label('Paciente')
-                ->relationship('patient', 'nombre')
-                ->searchable()
-                ->preload()
-                ->nullable(),
-                Select::make('expediente_id')
-                    ->label('Expediente')
-                    ->relationship('expediente', 'numero_expediente')
+                Select::make('paciente_id')
+                    ->label('Paciente')
+                    ->relationship(
+                        name: 'paciente', 
+                        titleAttribute: 'nombre', 
+                        modifyQueryUsing: fn (Builder $query) => $query->orderBy('created_at')->limit(10)
+                    )
                     ->searchable()
                     ->preload()
                     ->nullable(),
-                DateTimePicker::make('appointment_at')
+                Select::make('expediente_id')
+                    ->label('Expediente')
+                    ->relationship(
+                        name: 'expediente', 
+                        titleAttribute: 'numero_expediente', 
+                        modifyQueryUsing: fn (Builder $query) => $query->orderBy('created_at')->limit(10)
+                    )
+                    ->searchable()
+                    ->preload()
+                    ->nullable(),
+                DateTimePicker::make('fecha_cita')
                     ->label('Fecha y Hora de la Cita')
                     ->required()
                     ->displayFormat('F j, Y H:i')
                     ->firstDayOfWeek(1)
                     ->minDate(now()),
-                Forms\Components\TextInput::make('descripcion')
+                \Filament\Forms\Components\TextInput::make('descripcion')
                     ->maxLength(255)
                     ->nullable(),
             ]);
@@ -57,23 +65,18 @@ class CitaResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('appointment_at')
+                TextColumn::make('fecha_cita')
                     ->dateTime('F j, Y H:i')
                     ->sortable(),
-                TextColumn::make('patient.name')
+                TextColumn::make('paciente.nombre')
                     ->label('Paciente')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('expediente.title')
+                TextColumn::make('expediente.numero_expediente')
                     ->label('Expediente')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('description'),
-            ])
-            ->filters([
-                SelectFilter::make('patient_id')
-                    ->relationship('patient', 'name')
-                    ->label('Filtrar por Paciente'),
+                TextColumn::make('descripcion'),
             ])
             ->actions([
                 \Filament\Tables\Actions\ViewAction::make(),
