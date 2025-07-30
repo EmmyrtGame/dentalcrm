@@ -23,7 +23,7 @@ class CitaResource extends Resource
 {
     protected static ?string $model = Cita::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar';
 
     protected static ?string $tenantRelationshipName = 'citas';
 
@@ -31,6 +31,13 @@ class CitaResource extends Resource
     {
         return $form->schema(static::getFormFields());
     }
+
+    /*
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+    */
 
     public static function getFormFields(): array
     {

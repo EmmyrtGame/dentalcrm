@@ -4,6 +4,7 @@ namespace App\Filament\Resources\CitaResource\Widgets;
 
 use App\Filament\Resources\CitaResource;
 use App\Models\Cita;
+use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Model;
 use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
 use Saade\FilamentFullCalendar\Actions;
@@ -52,11 +53,18 @@ class CitaCalendarWidget extends FullCalendarWidget
                     function (Forms\Form $form, array $arguments) {
                         $form->fill([
                             'fecha_cita' => $arguments['start'] ?? now(),
+                            'team_id' => Filament::getTenant()?->id, // Añadir el team_id del tenant actual
                         ]);
                     }
                 )
+                ->using(function (array $data, string $model): Model {
+                    // Asegurar que el team_id esté presente al crear
+                    $data['team_id'] = Filament::getTenant()?->id;
+                    
+                    return $model::create($data);
+                })
                 ->after(function () {
-                    // Emitir evento para refrescar la tabla
+                    $this->refreshRecords();
                     $this->dispatch('refreshTable');
                 }),
         ];
@@ -75,11 +83,13 @@ class CitaCalendarWidget extends FullCalendarWidget
                     }
                 )
                 ->after(function () {
+                    $this->refreshRecords();
                     // Emitir evento para refrescar la tabla
                     $this->dispatch('refreshTable');
                 }),
             Actions\DeleteAction::make()
                 ->after(function () {
+                    $this->refreshRecords();
                     // Emitir evento para refrescar la tabla
                     $this->dispatch('refreshTable');
                 }),
