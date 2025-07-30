@@ -29,41 +29,45 @@ class CitaResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Select::make('paciente_id')
-                    ->label('Paciente')
-                    ->relationship(
-                        name: 'paciente', 
-                        titleAttribute: 'nombre', 
-                        modifyQueryUsing: fn (Builder $query) => $query->orderBy('created_at')->limit(10)
-                    )
-                    ->searchable()
-                    ->preload()
-                    ->nullable(),
-                Select::make('expediente_id')
-                    ->label('Expediente')
-                    ->relationship(
-                        name: 'expediente', 
-                        titleAttribute: 'numero_expediente', 
-                        modifyQueryUsing: fn (Builder $query) => $query->orderBy('created_at')->limit(10)
-                    )
-                    ->searchable()
-                    ->preload()
-                    ->nullable(),
-                DateTimePicker::make('fecha_cita')
-                    ->label('Fecha y Hora de la Cita')
-                    ->required()
-                    ->displayFormat('F j, Y H:i')
-                    ->firstDayOfWeek(1)
-                    ->minDate(now())
-                    ->minutesStep(30)
-                    ->seconds(false)
-                    ->native(false),
-                \Filament\Forms\Components\TextInput::make('descripcion')
-                    ->maxLength(255)
-                    ->nullable(),
-            ]);
+        return $form->schema(static::getFormFields());
+    }
+
+    public static function getFormFields(): array
+    {
+        return [
+            Select::make('paciente_id')
+                ->label('Paciente')
+                ->relationship(
+                    name: 'paciente', 
+                    titleAttribute: 'nombre', 
+                    modifyQueryUsing: fn (Builder $query) => $query->orderBy('created_at')->limit(10)
+                )
+                ->searchable()
+                ->preload()
+                ->nullable(),
+            Select::make('expediente_id')
+                ->label('Expediente')
+                ->relationship(
+                    name: 'expediente', 
+                    titleAttribute: 'numero_expediente', 
+                    modifyQueryUsing: fn (Builder $query) => $query->orderBy('created_at')->limit(10)
+                )
+                ->searchable()
+                ->preload()
+                ->nullable(),
+            DateTimePicker::make('fecha_cita')
+                ->label('Fecha y Hora de la Cita')
+                ->required()
+                ->displayFormat('F j, Y H:i')
+                ->firstDayOfWeek(1)
+                ->minDate(now())
+                ->minutesStep(30)
+                ->seconds(false)
+                ->native(false),
+            \Filament\Forms\Components\TextInput::make('descripcion')
+                ->maxLength(255)
+                ->nullable(),
+        ];
     }
 
     public static function table(Table $table): Table

@@ -11,6 +11,16 @@ class ListCitas extends ListRecords
 {
     protected static string $resource = CitaResource::class;
 
+    // Añadir listeners
+    protected $listeners = [
+        'refreshTable' => 'refreshTable',
+    ];
+
+    public function refreshTable(): void
+    {
+        $this->resetTable();
+    }
+
     protected function getHeaderActions(): array
     {
         return [
@@ -18,7 +28,7 @@ class ListCitas extends ListRecords
         ];
     }
 
-    protected function getHeaderWidgets(): array
+    protected function getFooterWidgets(): array
     {
         return [
             CitaCalendarWidget::class,

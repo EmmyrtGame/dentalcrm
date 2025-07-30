@@ -22,6 +22,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -63,7 +64,9 @@ class AdminPanelProvider extends PanelProvider
             ->tenant(Team::class)
             ->tenantRegistration(RegisterTeam::class)
             ->plugins([
-                \Saade\FilamentFullCalendar\FilamentFullCalendarPlugin::make(),
+                FilamentFullCalendarPlugin::make()
+                ->selectable()
+                ->editable()
             ])
             ->tenantMenuItems([
                 'register' => MenuItem::make()

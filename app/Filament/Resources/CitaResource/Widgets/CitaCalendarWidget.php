@@ -4,11 +4,19 @@ namespace App\Filament\Resources\CitaResource\Widgets;
 
 use App\Filament\Resources\CitaResource;
 use App\Models\Cita;
+use Illuminate\Database\Eloquent\Model;
 use Saade\FilamentFullCalendar\Widgets\FullCalendarWidget;
 use Saade\FilamentFullCalendar\Actions;
+use Saade\FilamentFullCalendar\Data\EventData;
+use Filament\Forms;
 
 class CitaCalendarWidget extends FullCalendarWidget
 {
+    public Model | string | null $model = Cita::class;
+
+    // Añadir listeners para eventos
+    protected $listeners = ['refreshCalendar' => '$refresh'];
+
     public function fetchEvents(array $fetchInfo): array
     {
         return Cita::query()
@@ -17,25 +25,23 @@ class CitaCalendarWidget extends FullCalendarWidget
             ->with(['paciente', 'expediente'])
             ->get()
             ->map(function (Cita $cita) {
-                return [
-                    'id' => $cita->id,
-                    'title' => $cita->paciente?->nombre ?? 'Sin paciente',
-                    'start' => $cita->fecha_cita->toISOString(),
-                    'end' => $cita->fecha_cita->addMinutes(30)->toISOString(),
-                    'extendedProps' => [
+                return EventData::make()
+                    ->id($cita->id)
+                    ->title($cita->paciente?->nombre ?? 'Sin paciente')
+                    ->start($cita->fecha_cita)
+                    ->end($cita->fecha_cita->addMinutes(30))
+                    ->extendedProps([
                         'expediente' => $cita->expediente?->numero_expediente,
                         'descripcion' => $cita->descripcion,
-                    ],
-                ];
+                    ]);
             })
-            ->all();
+            ->toArray();
     }
 
+    // Reutilizar los campos del Resource
     public function getFormSchema(): array
     {
-        return CitaResource::form(
-            \Filament\Forms\Form::make($this)
-        )->getSchema();
+        return CitaResource::getFormFields();
     }
 
     protected function headerActions(): array
@@ -43,12 +49,16 @@ class CitaCalendarWidget extends FullCalendarWidget
         return [
             Actions\CreateAction::make()
                 ->mountUsing(
-                    function (\Filament\Forms\Form $form, array $arguments) {
+                    function (Forms\Form $form, array $arguments) {
                         $form->fill([
                             'fecha_cita' => $arguments['start'] ?? now(),
                         ]);
                     }
-                ),
+                )
+                ->after(function () {
+                    // Emitir evento para refrescar la tabla
+                    $this->dispatch('refreshTable');
+                }),
         ];
     }
 
@@ -57,11 +67,22 @@ class CitaCalendarWidget extends FullCalendarWidget
         return [
             Actions\EditAction::make()
                 ->mountUsing(
-                    function (Cita $record, \Filament\Forms\Form $form, array $arguments) {
-                        $form->fill($record->attributesToArray());
+                    function (Cita $record, Forms\Form $form, array $arguments) {
+                        $form->fill([
+                            ...$record->attributesToArray(),
+                            'fecha_cita' => $arguments['event']['start'] ?? $record->fecha_cita,
+                        ]);
                     }
-                ),
-            Actions\DeleteAction::make(),
+                )
+                ->after(function () {
+                    // Emitir evento para refrescar la tabla
+                    $this->dispatch('refreshTable');
+                }),
+            Actions\DeleteAction::make()
+                ->after(function () {
+                    // Emitir evento para refrescar la tabla
+                    $this->dispatch('refreshTable');
+                }),
         ];
     }
 
