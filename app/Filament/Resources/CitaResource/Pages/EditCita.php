@@ -10,6 +10,14 @@ class EditCita extends EditRecord
 {
     protected static string $resource = CitaResource::class;
 
+    /**
+     * Redirect to the index page after creating a patient
+     */
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
     protected function getHeaderActions(): array
     {
         return [

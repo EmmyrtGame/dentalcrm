@@ -27,23 +27,25 @@ class CitaResource extends Resource
 
     protected static ?string $tenantRelationshipName = 'citas';
 
+    protected static ?int $navigationSort = 3;
+
     public static function form(Form $form): Form
     {
         return $form->schema(static::getFormFields());
     }
 
-    /*
+    
     public static function canCreate(): bool
     {
         return false;
     }
-    */
+    
 
     public static function getFormFields(): array
     {
         return [
             Select::make('paciente_id')
-                ->label('Paciente')
+                ->label('Paciente (opcional)')
                 ->relationship(
                     name: 'paciente', 
                     titleAttribute: 'nombre', 
@@ -53,7 +55,7 @@ class CitaResource extends Resource
                 ->preload()
                 ->nullable(),
             Select::make('expediente_id')
-                ->label('Expediente')
+                ->label('Expediente (opcional)')
                 ->relationship(
                     name: 'expediente', 
                     titleAttribute: 'numero_expediente', 
@@ -71,8 +73,10 @@ class CitaResource extends Resource
                 ->minutesStep(30)
                 ->seconds(false)
                 ->native(false),
-            \Filament\Forms\Components\TextInput::make('descripcion')
+            \Filament\Forms\Components\Textarea::make('descripcion')
+                ->label('Descripción (opcional)')
                 ->maxLength(255)
+                ->rows(3)
                 ->nullable(),
         ];
     }
