@@ -24,4 +24,9 @@ class Team extends Model
     {
         return $this->hasMany(Expediente::class);
     }
+
+    public function citas()
+    {
+        return $this->hasMany(Cita::class);
+    }
 }
