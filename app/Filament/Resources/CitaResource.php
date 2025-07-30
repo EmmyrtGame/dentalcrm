@@ -37,7 +37,7 @@ class CitaResource extends Resource
     
     public static function canCreate(): bool
     {
-        return false;
+        return true;
     }
     
 
@@ -70,9 +70,26 @@ class CitaResource extends Resource
                 ->displayFormat('F j, Y H:i')
                 ->firstDayOfWeek(1)
                 ->minDate(now())
+                ->default(now()->addDay()->setTime(9, 0))
                 ->minutesStep(30)
                 ->seconds(false)
-                ->native(false),
+                ->native(false)
+                ->live(onBlur: true)
+                ->afterStateUpdated(function ($state, callable $set, callable $get, $component) {
+                    if ($state) {
+                        $date = \Carbon\Carbon::parse($state);
+                        $minutes = $date->minute;
+                        
+                        if (!in_array($minutes, [0, 30])) {
+                            $component->state(null);
+                            \Filament\Notifications\Notification::make()
+                                ->title('Hora inválida')
+                                ->body('La hora debe terminar en :00 o :30 minutos.')
+                                ->danger()
+                                ->send();
+                        }
+                    }
+                }),
             \Filament\Forms\Components\Textarea::make('descripcion')
                 ->label('Descripción (opcional)')
                 ->maxLength(255)

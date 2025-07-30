@@ -52,7 +52,7 @@ class CitaCalendarWidget extends FullCalendarWidget
                 ->mountUsing(
                     function (Forms\Form $form, array $arguments) {
                         $form->fill([
-                            'fecha_cita' => $arguments['start'] ?? now(),
+                            'fecha_cita' => $arguments['start'] ?? now()->addDay()->setTime(9, 0),
                             'team_id' => Filament::getTenant()?->id, // Añadir el team_id del tenant actual
                         ]);
                     }
