@@ -53,6 +53,7 @@ class CitaResource extends Resource
                 )
                 ->searchable()
                 ->preload()
+                ->default(request()->input('paciente_id'))
                 ->nullable(),
             Select::make('expediente_id')
                 ->label('Expediente (opcional)')
@@ -63,6 +64,7 @@ class CitaResource extends Resource
                 )
                 ->searchable()
                 ->preload()
+                ->default(request()->input('expediente_id'))
                 ->nullable(),
             DateTimePicker::make('fecha_cita')
                 ->label('Fecha y Hora de la Cita')

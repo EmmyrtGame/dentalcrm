@@ -11,6 +11,7 @@ use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Filament\Facades\Filament;
 
 class ExpedienteResource extends Resource
 {
@@ -146,6 +147,15 @@ class ExpedienteResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
+                Tables\Actions\Action::make('agendarCita')
+                    ->label('Agendar Cita')
+                    ->icon('heroicon-o-calendar')
+                    ->url(fn ($record) => route('filament.admin.resources.citas.create', [
+                        'tenant' => Filament::getTenant()->id,
+                        'paciente_id' => $record->paciente_id,
+                        'expediente_id' => $record->id,
+                    ]))
+                    ->openUrlInNewTab(false),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
