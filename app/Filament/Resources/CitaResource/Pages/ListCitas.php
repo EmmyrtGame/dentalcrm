@@ -28,7 +28,7 @@ class ListCitas extends ListRecords
         ];
     }
 
-    protected function getFooterWidgets(): array
+    protected function getHeaderWidgets(): array
     {
         return [
             CitaCalendarWidget::class,

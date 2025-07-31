@@ -61,6 +61,7 @@ class CitaCalendarWidget extends FullCalendarWidget
     {
         return [
             Actions\CreateAction::make()
+                ->createAnother(false)
                 ->mountUsing(
                     function (Forms\Form $form, array $arguments) {
                         $form->fill([
