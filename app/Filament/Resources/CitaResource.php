@@ -85,7 +85,11 @@ class CitaResource extends Resource
                             }
                         }
                     };
-                }),
+                })
+                ->validationMessages([
+                    'required'       => 'La fecha y hora de la cita es obligatoria.',
+                    'after_or_equal' => 'La fecha de la cita debe ser posterior a la fecha actual.',
+                ]),
             \Filament\Forms\Components\Textarea::make('descripcion')
                 ->label('Descripción (opcional)')
                 ->maxLength(255)
