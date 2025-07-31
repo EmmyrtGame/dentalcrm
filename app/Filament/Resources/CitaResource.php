@@ -113,11 +113,20 @@ class CitaResource extends Resource
             ])
             ->actions([
                 \Filament\Tables\Actions\ViewAction::make(),
-                \Filament\Tables\Actions\EditAction::make(),
-                \Filament\Tables\Actions\DeleteAction::make(),
+                \Filament\Tables\Actions\EditAction::make()
+                    ->after(function ($livewire) {
+                        $livewire->dispatch('refreshCalendar');
+                    }),
+                \Filament\Tables\Actions\DeleteAction::make()
+                    ->after(function ($livewire) {
+                        $livewire->dispatch('refreshCalendar');
+                    }),
             ])
             ->bulkActions([
-                \Filament\Tables\Actions\DeleteBulkAction::make(),
+                \Filament\Tables\Actions\DeleteBulkAction::make()
+                    ->after(function ($livewire) {
+                        $livewire->dispatch('refreshCalendar');
+                    }),
             ]);
     }
 

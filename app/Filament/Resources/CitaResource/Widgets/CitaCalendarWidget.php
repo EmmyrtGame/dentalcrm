@@ -16,10 +16,22 @@ class CitaCalendarWidget extends FullCalendarWidget
     public Model | string | null $model = Cita::class;
 
     // Añadir listeners para eventos
-    protected $listeners = ['refreshCalendar' => '$refresh'];
+    protected $listeners = [
+        'refreshCalendar' => 'refreshCalendarData',
+        'refreshTable' => '$refresh',
+    ];
+
+    // Reemplaza el método refreshCalendarData() con lo siguiente:
+    public function refreshCalendarData(): void
+    {
+        $this->refreshRecords();
+        $this->dispatch('$refresh');
+    }
 
     public function fetchEvents(array $fetchInfo): array
     {
+        \Illuminate\Support\Facades\DB::flushQueryLog();
+
         return Cita::query()
             ->where('fecha_cita', '>=', $fetchInfo['start'])
             ->where('fecha_cita', '<=', $fetchInfo['end'])
