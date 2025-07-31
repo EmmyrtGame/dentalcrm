@@ -34,12 +34,10 @@ class CitaResource extends Resource
         return $form->schema(static::getFormFields());
     }
 
-    
     public static function canCreate(): bool
     {
-        return false;
+        return true;
     }
-    
 
     public static function getFormFields(): array
     {

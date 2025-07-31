@@ -10,6 +10,7 @@ use Filament\Resources\Pages\ListRecords;
 class ListCitas extends ListRecords
 {
     protected static string $resource = CitaResource::class;
+    protected static ?string $breadcrumb = 'Calendario';
 
     // Añadir listeners
     protected $listeners = [
@@ -23,9 +24,7 @@ class ListCitas extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-            Actions\CreateAction::make(),
-        ];
+        return [];
     }
 
     protected function getHeaderWidgets(): array
