@@ -67,6 +67,8 @@ class AdminPanelProvider extends PanelProvider
                 FilamentFullCalendarPlugin::make()
                 ->selectable()
                 ->editable()
+                ->locale('es')
+                ->timeZone(config('app.timezone'))
             ])
             ->tenantMenuItems([
                 'register' => MenuItem::make()
