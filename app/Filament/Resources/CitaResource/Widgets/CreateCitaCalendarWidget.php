@@ -75,6 +75,11 @@ class CreateCitaCalendarWidget extends FullCalendarWidget
         ];
     }
 
+    public function onEventClick(array $event): void
+    {
+        return;
+    }
+
     public function onDateSelect(string $start, ?string $end, bool $allDay, ?array $view, ?array $resource): void
     {
         static $lastProcessedStart = null;

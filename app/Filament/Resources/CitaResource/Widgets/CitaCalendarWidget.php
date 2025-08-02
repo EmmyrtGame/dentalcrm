@@ -130,6 +130,9 @@ class CitaCalendarWidget extends FullCalendarWidget
             'nowIndicator' => true,
             'selectable' => true,
             'selectMirror' => true,
+            'validRange' => [
+                'start' => now()->toIso8601String(),
+            ],
         ];
     }
 }
