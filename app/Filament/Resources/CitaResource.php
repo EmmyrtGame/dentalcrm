@@ -7,6 +7,8 @@ use App\Filament\Resources\CitaResource\Pages\Calendar;
 use App\Filament\Resources\CitaResource\RelationManagers;
 use App\Filament\Resources\CitaResource\Widgets\CitaCalendarWidget;
 use App\Models\Cita;
+use App\Rules\NoOverlappingCitas;
+use App\Rules\NoSolapamientoCitas;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
@@ -39,7 +41,7 @@ class CitaResource extends Resource
         return true;
     }
 
-    public static function getFormFields(): array
+    public static function getFormFields(?int $excludeId = null, $operation = null): array
     {
         return [
             Select::make('paciente_id')
@@ -74,18 +76,29 @@ class CitaResource extends Resource
                 ->seconds(false)
                 ->native(false)
                 ->live(onBlur: true)
-                ->rule(function () {
-                    return function (string $attribute, $value, \Closure $fail) {
-                        if ($value) {
-                            $date = \Carbon\Carbon::parse($value);
-                            $minutes = $date->minute;
-                            
-                            if (!in_array($minutes, [0, 30])) {
-                                $fail('La hora debe terminar en :00 o :30 minutos.');
+                ->rules([
+                    function () {
+                        return function (string $attribute, $value, \Closure $fail) {
+                            if ($value) {
+                                $date = \Carbon\Carbon::parse($value);
+                                $minutes = $date->minute;
+                                
+                                if (!in_array($minutes, [0, 30])) {
+                                    $fail('La hora debe terminar en :00 o :30 minutos.');
+                                }
                             }
+                        };
+                    },
+                    function ($get) use ($excludeId, $operation) {
+                        // Si no se proporciona excludeId, intentar obtenerlo del contexto
+                        $currentExcludeId = $excludeId;
+                        if (!$currentExcludeId && $operation === 'edit') {
+                            $currentExcludeId = request()->route('record') ?? null;
                         }
-                    };
-                })
+                        
+                        return new NoSolapamientoCitas($currentExcludeId);
+                    }
+                ])
                 ->validationMessages([
                     'required'       => 'La fecha y hora de la cita es obligatoria.',
                     'after_or_equal' => 'La fecha de la cita debe ser posterior a la fecha actual.',

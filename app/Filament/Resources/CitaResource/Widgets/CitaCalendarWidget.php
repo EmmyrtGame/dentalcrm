@@ -62,6 +62,7 @@ class CitaCalendarWidget extends FullCalendarWidget
         return [
             Actions\CreateAction::make()
                 ->createAnother(false)
+                ->form(CitaResource::getFormFields(null, 'create'))
                 ->mountUsing(
                     function (Forms\Form $form, array $arguments) {
                         $form->fill([
@@ -87,6 +88,9 @@ class CitaCalendarWidget extends FullCalendarWidget
     {
         return [
             Actions\EditAction::make()
+                ->form(function (Cita $record) {
+                    return CitaResource::getFormFields($record->id, 'edit'); // Pasar el ID para exclusión
+                })
                 ->mountUsing(
                     function (Cita $record, Forms\Form $form, array $arguments) {
                         $form->fill([
