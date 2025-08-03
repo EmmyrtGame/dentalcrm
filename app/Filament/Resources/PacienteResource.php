@@ -439,10 +439,31 @@ class PacienteResource extends Resource
                     ->color('info')
                     ->url(fn (Paciente $record): string => route('paciente.export.pdf', $record))
                     ->openUrlInNewTab(),
-                Tables\Actions\DeleteAction::make()
-                    ->modalDescription('¿Estás seguro de que deseas borrar este paciente? Esta acción eliminará permanentemente toda la información del paciente y no se puede deshacer.')
+                Action::make('delete')
+                    ->label('Eliminar')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Confirmar Eliminación del Paciente')
+                    ->modalDescription('¿Estás seguro de que deseas eliminar este paciente? Puedes elegir si también eliminar los expedientes asociados.')
                     ->modalSubmitActionLabel('Sí, Eliminar')
-                    ->modalCancelActionLabel('Cancelar'),
+                    ->modalCancelActionLabel('Cancelar')
+                    ->form([
+                        Forms\Components\Checkbox::make('eliminar_expedientes')
+                            ->label('Eliminar también expedientes asociados (información completa del paciente)')
+                            ->helperText('Si se selecciona, se eliminarán permanentemente todos los expedientes relacionados con este paciente. Esta acción no se puede deshacer.'),
+                    ])
+                    ->action(function (Paciente $record, array $data) {
+                        // Caso 1: Eliminación por default (solo paciente, asociados se setean a null)
+                        if (! Arr::get($data, 'eliminar_expedientes', false)) {
+                            $record->delete();
+                            return;
+                        }
+
+                        // Caso 2: Eliminación completa, incluyendo expedientes asociados
+                        $record->expedientes()->delete(); // Elimina expedientes asociados
+                        $record->delete(); // Finalmente, elimina el paciente
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
