@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('expedientes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('paciente_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('paciente_id')->nullable()->constrained()->nullOnDelete();
             // Foreign key para equipos
             $table->foreignId('team_id')->references('id')->on('teams')->onDelete('cascade');
             $table->string('numero_expediente')->unique();
@@ -24,7 +24,6 @@ return new class extends Migration
             $table->date('fecha_proxima_cita')->nullable();
             $table->boolean('completado')->default(false);
             $table->timestamps();
-            $table->softDeletes();
         });
 
     }

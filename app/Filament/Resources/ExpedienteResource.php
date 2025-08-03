@@ -105,8 +105,15 @@ class ExpedienteResource extends Resource
 
                 Tables\Columns\TextColumn::make('paciente.nombre_completo')
                     ->label('Paciente')
-                    ->searchable(['nombre', 'apellido_paterno'])
-                    ->sortable(),
+                    ->searchable(['nombre', 'apellido_paterno', 'apellido_materno'])
+                    ->sortable()
+                    ->formatStateUsing(function ($state, Expediente $record) {
+                        if ($record->paciente_id === null || !$record->paciente) {
+                            return 'Paciente eliminado';
+                        }
+                        return $record->paciente->nombre_completo ?? 'Nombre no disponible';
+                    })
+                    ->default('Paciente eliminado'),
 
                 Tables\Columns\TextColumn::make('tipo_consulta')
                     ->label('Tipo')
@@ -144,6 +151,10 @@ class ExpedienteResource extends Resource
                     ->query(function ($query) {
                         return $query->where('completado', false);
                     }),
+
+                Filter::make('sin_paciente')
+                    ->label('Sin Paciente')
+                    ->query(fn ($query) => $query->whereNull('paciente_id')),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

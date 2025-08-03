@@ -439,7 +439,10 @@ class PacienteResource extends Resource
                     ->color('info')
                     ->url(fn (Paciente $record): string => route('paciente.export.pdf', $record))
                     ->openUrlInNewTab(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->modalDescription('¿Estás seguro de que deseas borrar este paciente? Esta acción eliminará permanentemente toda la información del paciente y no se puede deshacer.')
+                    ->modalSubmitActionLabel('Sí, Eliminar')
+                    ->modalCancelActionLabel('Cancelar'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
