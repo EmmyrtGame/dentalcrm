@@ -21,6 +21,11 @@ class CitaCalendarWidget extends FullCalendarWidget
         'refreshTable' => '$refresh',
     ];
 
+    private function clearRecord(): void
+    {
+        $this->record = null;
+    }
+
     // Reemplaza el método refreshCalendarData() con lo siguiente:
     public function refreshCalendarData(): void
     {
@@ -100,12 +105,14 @@ class CitaCalendarWidget extends FullCalendarWidget
                     }
                 )
                 ->after(function () {
+                    $this->clearRecord();
                     $this->refreshRecords();
                     // Emitir evento para refrescar la tabla
                     $this->dispatch('refreshTable');
                 }),
             Actions\DeleteAction::make()
                 ->after(function () {
+                    $this->clearRecord();
                     $this->refreshRecords();
                     // Emitir evento para refrescar la tabla
                     $this->dispatch('refreshTable');
